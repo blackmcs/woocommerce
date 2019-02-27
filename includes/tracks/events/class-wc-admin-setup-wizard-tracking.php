@@ -47,6 +47,8 @@ class WC_Admin_Setup_Wizard_Tracking {
 		// phpcs:disable WordPress.Security.NonceVerification.NoNonceVerification
 		$current_step = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : '';
 		if ( ! empty( $_POST['save_step'] ) ) {
+			update_option( 'woocommerce_obw_last_completed_step', $current_step );
+
 			switch ( $current_step ) {
 				case '':
 				case 'store_setup':
