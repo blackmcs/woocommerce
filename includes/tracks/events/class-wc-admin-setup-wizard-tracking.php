@@ -11,6 +11,31 @@ defined( 'ABSPATH' ) || exit;
  * This class adds actions to track usage of the WooCommerce Onboarding Wizard.
  */
 class WC_Admin_Setup_Wizard_Tracking {
+
+	/**
+	 * Class instance.
+	 *
+	 * @var WC_Admin_Setup_Wizard_Tracking instance
+	 */
+	protected static $instance = false;
+
+	/**
+	 * Steps for the setup wizard
+	 *
+	 * @var array
+	 */
+	private $steps = array();
+
+	/**
+	 * Get class instance
+	 */
+	public static function get_instance() {
+		if ( ! self::$instance ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+
 	/**
 	 * Init tracking.
 	 */
@@ -30,6 +55,8 @@ class WC_Admin_Setup_Wizard_Tracking {
 			}
 		}
 		// phpcs:enable
+
+		add_filter( 'woocommerce_setup_wizard_steps', array( __CLASS__, 'set_obw_steps' ) );
 	}
 
 	/**
@@ -49,4 +76,17 @@ class WC_Admin_Setup_Wizard_Tracking {
 
 		WC_Tracks::record_event( 'obw_store_setup', $properties );
 	}
+
+	/**
+	 * Set the OBW steps inside this class instance.
+	 *
+	 * @param array $steps Array of OBW steps.
+	 */
+	public static function set_obw_steps( $steps ) {
+		$wc_admin_setup_wizard_tracking        = self::get_instance();
+		$wc_admin_setup_wizard_tracking->steps = $steps;
+
+		return $steps;
+	}
+
 }
